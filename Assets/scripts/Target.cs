@@ -1,8 +1,12 @@
+using System;
 using UnityEngine;
 using System.Collections;
+using Random = UnityEngine.Random;
+
 public class Target : MonoBehaviour, IDamageable
 {
     private float _health = 100f;
+    private Spawner _spawner;
 
     private Vector3 _moveDirection;
     private float _moveSpeed;
@@ -12,8 +16,10 @@ public class Target : MonoBehaviour, IDamageable
 
     private void Start()
     {
-        StartCoroutine(MoveRoutine());
+        _spawner = FindFirstObjectByType<Spawner>();
+        StartCoroutine(MoveRoutine());;
     }
+    
     private void Update()
     {
         if(_isMoving) 
@@ -24,7 +30,8 @@ public class Target : MonoBehaviour, IDamageable
     {
         _health -= damage;
         if (_health <= 0)
-        {
+        { 
+            _spawner.StartCoroutine(_spawner.RespawnDelayed());            
             Destroy(gameObject);
         }
     }

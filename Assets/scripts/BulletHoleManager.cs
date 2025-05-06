@@ -43,7 +43,8 @@ public class BulletHoleManager : MonoBehaviour
         Quaternion targetRotation = Quaternion.LookRotation(ray.direction);
 
         spawnedObject.transform.rotation = targetRotation;
-        spawnedObject.transform.SetParent(bulletHoleContainer.transform);
+        //spawnedObject.transform.SetParent(bulletHoleContainer.transform);
+        spawnedObject.transform.SetParent(hit.collider.transform);
         spawnedObject.transform.Rotate(Vector3.forward, Random.Range(0f, 360f));
         Destroy(spawnedObject, destroyDelay);
     }

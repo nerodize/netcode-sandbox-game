@@ -26,7 +26,6 @@ public class Gun : MonoBehaviour
     public GameObject hitEffectPrefab;
     
     
-
     private void Start()
     {
         PlayerShoot.shootInput += Shoot;

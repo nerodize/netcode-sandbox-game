@@ -1,16 +1,16 @@
 using System;
 using System.Collections;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using TMPro;
+using Unity.Netcode;
 
-public class Gun : MonoBehaviour
+public class Gun : NetworkBehaviour
 {
     [Header("References")]
     [SerializeField] private GunData gunData;
     [SerializeField] private Transform muzzle;
     [SerializeField] private ParticleSystem muzzleFlash;
-    [SerializeField] private LayerMask hitMask; // Wichtig: Exkludiere deinen eigenen Layer hier
+    [SerializeField] private LayerMask hitMask;
     
     [Header("Effects")]
     [SerializeField] private AudioClip shootSound;
@@ -23,29 +23,51 @@ public class Gun : MonoBehaviour
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI ammoText;
 
-    public GameObject hitEffectPrefab;
-    
-    
+    [Header("Bullet Hole FX")]
+    [SerializeField] private GameObject bulletHolePrefab;
+    [SerializeField] private float destroyDelay = 10f;
+    BulletHoleManager bulletManager;
+
     private void Start()
     {
+        if (!IsOwner) return;
+        
+        UpdateAmmoUI();
+        
+        bulletManager = FindFirstObjectByType<BulletHoleManager>();
+       if (bulletManager == null)
+            Debug.LogWarning("BulletHoleManager not found in scene.");
+        
+        Debug.Log("📦 Gun.cs Start aufgerufen");
+        gunData.isReloading = false;
+        gunData.currentAmmo = gunData.magazineSize;
+
         PlayerShoot.shootInput += Shoot;
         PlayerShoot.reloadInput += StartReloading;
-        
-        _playerCamera = Camera.main;
 
+        _playerCamera = Camera.main;
         if (_playerCamera == null)
             Debug.LogError("Camera not found.");
-        
-        _audioSource = GetComponent<AudioSource>();
-        if (_audioSource == null)
-            _audioSource = gameObject.AddComponent<AudioSource>();
+
+        _audioSource = GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
     }
 
     private void Update()
     {
+        if (!IsOwner) return;
+        
         _timeSinceLastShot += Time.deltaTime;
         UpdateAmmoUI();
     }
+    private void OnDestroy()
+    {
+        if (IsOwner)
+        {
+            PlayerShoot.shootInput -= Shoot;
+            PlayerShoot.reloadInput -= StartReloading;
+        }
+    }
+    
 
     public void StartReloading()
     {
@@ -58,57 +80,45 @@ public class Gun : MonoBehaviour
     private IEnumerator Reload()
     {
         gunData.isReloading = true;
-
         yield return new WaitForSeconds(gunData.reloadTime);
-        
         gunData.currentAmmo = gunData.magazineSize;
-        
         gunData.isReloading = false;
     }
-    
-    
-    private bool CanShoot() =>
+
+    public bool CanShoot() =>
         !gunData.isReloading && _timeSinceLastShot > 1f / (gunData.fireRate / 60f);
 
     private void Shoot()
     {
         if (gunData.currentAmmo <= 0 || !CanShoot() || _playerCamera == null) return;
 
-        // Kamera Ursprung und Richtung
         Vector3 camOrigin = _playerCamera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0f));
         Vector3 camDirection = _playerCamera.transform.forward;
 
-        // Raycast von der Kamera
         if (Physics.Raycast(camOrigin, camDirection, out RaycastHit camHit, gunData.maxDistance, hitMask))
         {
-            
             Debug.Log($"🎯 Hit: {camHit.transform.name}");
-            
-            // Schaden basierend auf dem Kamera-Hit zufügen => hier InParent Zusatz verwenden weil sonst das skript nicht aufgerufen werden kann.
-            // Mittlerweile redundant!!
-            // TODO: fix this in unity
+
+            // Schaden zufügen
             IDamageable damageable = camHit.transform.GetComponentInParent<IDamageable>();
             damageable?.Damage(gunData.damage);
-
-            // Debug Lines
-            Debug.DrawLine(camOrigin, camHit.point, Color.green, 1.5f); // Kamera zu Ziel
-            Debug.DrawRay(muzzle.position, (camHit.point - muzzle.position).normalized * gunData.maxDistance, Color.red, 1.5f); // Mündung zu Ziel
             
-            //SpawnHitEffect(camHit.point, Quaternion.LookRotation(camHit.normal));
-        }
-        else
-        {
-            Debug.Log("❌ Nothing hit.");
+            bulletManager.SpawnBulletHole(camHit, new Ray(camOrigin, camDirection));
+
+            // Bullet Hole erzeugen
+            //SpawnBulletHole(camHit, camDirection);
+
+            // Optional: Hit-Effekt
+            // SpawnHitEffect(camHit.point, Quaternion.LookRotation(camHit.normal));
         }
 
         gunData.currentAmmo--;
         _timeSinceLastShot = 0f;
         OnGunShot();
     }
-    
+
     private void OnGunShot()
     {
-        // Muzzle Flash, Sound etc.
         PlayShotSound();
         DisplayMuzzleFlash();
         Recoil();
@@ -117,12 +127,20 @@ public class Gun : MonoBehaviour
     private void PlayShotSound()
     {
         if (_audioSource != null && shootSound != null)
+        {
             _audioSource.PlayOneShot(shootSound);
+            Debug.Log("Audio played");
+        }
+        else
+        {
+            Debug.Log("No Audio played");
+        }
+            
     }
 
     private void DisplayMuzzleFlash()
     {
-        muzzleFlash.Play();
+        muzzleFlash?.Play();
     }
 
     private void Recoil()
@@ -132,12 +150,6 @@ public class Gun : MonoBehaviour
 
     private void UpdateAmmoUI()
     {
-        if (ammoText != null)
-            ammoText.text = $"{gunData.currentAmmo} / {gunData.magazineSize}";
-    }
-
-    void SpawnHitEffect(Vector3 position, Quaternion rotation)
-    {
-        Instantiate(hitEffectPrefab, position, rotation);
+        ammoText.text = ammoText != null ? $"{gunData.currentAmmo} / {gunData.magazineSize}" : "N/A";
     }
 }

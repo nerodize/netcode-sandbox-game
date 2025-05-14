@@ -12,26 +12,7 @@ public class BulletHoleManager : MonoBehaviour
     Ray currentRay;
     RaycastHit currentHit;
 
-    void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
-            {
-                SpawnBulletHole(hit, ray);
-            }
-
-            currentRay = ray;
-            currentHit = hit;
-        }
-
-        Debug.DrawLine(currentRay.origin, currentHit.point);
-    }
-
-    void SpawnBulletHole(RaycastHit hit, Ray ray)
+    public void SpawnBulletHole(RaycastHit hit, Ray ray)
     {
         float positionMultiplier = 0.8f;
         float spawnX = hit.point.x - ray.direction.x * positionMultiplier;

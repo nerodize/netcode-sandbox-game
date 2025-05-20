@@ -1,18 +1,23 @@
 using UnityEngine;
 using System.Collections;
+using Unity.Netcode;
 
-public class Spawner : MonoBehaviour
+public class Spawner : NetworkBehaviour
 {
     //[SerializeField] GameObject targetContainer;
     
-    public GameObject targetPrefab;
+    [Header("Spawn Settings")]
+    [SerializeField] private GameObject targetPrefab;
+    
     public Vector3 spawnAreaCenter = Vector3.zero;
     public Vector3 spawnAreaSize = new(10f, 0f, 10f);
 
-    public void Respawn()
+    private void Respawn()
     {
         Vector3 randomPosition = GetRandomPositionInArea();
-        Instantiate(targetPrefab, randomPosition, Quaternion.identity);
+        
+       var targetInstance = Instantiate(targetPrefab, randomPosition, Quaternion.identity);
+       targetInstance.GetComponent<NetworkObject>().Spawn();
     }
 
     private Vector3 GetRandomPositionInArea()
@@ -28,8 +33,18 @@ public class Spawner : MonoBehaviour
         Respawn();
     }
 
+    /*
     private void Start()
     {
         Respawn();
+    }
+    */
+    
+    public override void OnNetworkSpawn()
+    {
+        if (IsServer)
+        {
+            Respawn();
+        }
     }
 }

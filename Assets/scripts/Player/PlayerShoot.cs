@@ -1,7 +1,8 @@
 using UnityEngine;
 using System;
+using Unity.Netcode;
 
-public class PlayerShoot : MonoBehaviour
+public class PlayerShoot : NetworkBehaviour
 {
     public static Action shootInput;
     public static Action reloadInput;
@@ -10,6 +11,7 @@ public class PlayerShoot : MonoBehaviour
 
     private void Update()
     {
+        if (!IsOwner) return;
         if (Input.GetMouseButtonDown(0))
         {
             Debug.Log("Mouse Click detected!!");

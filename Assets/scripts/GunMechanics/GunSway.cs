@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using IngameDebugConsole;
+using UnityEngine;
 
 public class GunSway : MonoBehaviour
 {
@@ -37,6 +38,9 @@ public class GunSway : MonoBehaviour
 
     private void Update()
     {
+        if (DebugLogManager.IsConsoleOpen)
+            return;
+        
         CalculateSway();
         ApplySway();
     }

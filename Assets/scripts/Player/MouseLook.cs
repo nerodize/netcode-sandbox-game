@@ -1,3 +1,4 @@
+using IngameDebugConsole;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -17,6 +18,20 @@ public class MouseLook : NetworkBehaviour
     {
         if (!IsOwner)
             return;
+        
+        
+        if (DebugLogManager.IsConsoleOpen)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            return;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+
         // Time.deltaTime is the time past after the last call of Update()!
         // Serves the purpose of different sensitivities when frame rates differentiate.
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;

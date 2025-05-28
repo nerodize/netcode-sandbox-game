@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using IngameDebugConsole;
 using UnityEngine;
 using TMPro;
 using Unity.Netcode;
@@ -33,13 +34,16 @@ public class Gun : NetworkBehaviour
     {
         if (!IsOwner) return;
         
+        if (DebugLogManager.IsConsoleOpen)
+            return;
+
         UpdateAmmoUI();
         
         _bulletManager = FindFirstObjectByType<BulletHoleManager>();
        if (_bulletManager == null)
             Debug.LogWarning("BulletHoleManager not found in scene.");
         
-        Debug.Log("📦 Gun.cs Start aufgerufen");
+        Debug.Log("Gun.cs Start aufgerufen");
         gunData.isReloading = false;
         gunData.currentAmmo = gunData.magazineSize;
 
@@ -56,6 +60,7 @@ public class Gun : NetworkBehaviour
     private void Update()
     {
         if (!IsOwner) return;
+        if (InputState.InputLocked) return; 
         
         _timeSinceLastShot += Time.deltaTime;
         UpdateAmmoUI();
@@ -101,7 +106,7 @@ public class Gun : NetworkBehaviour
         
         if (Physics.Raycast(camOrigin, camDirection, out RaycastHit camHit, gunData.maxDistance, hitMask))
         {
-            Debug.Log($"🎯 Hit: {camHit.transform.name}");
+            Debug.Log($"Hit: {camHit.transform.name}");
             
             var damageable = camHit.transform.GetComponentInParent<IDamageable>();
             damageable?.Damage(gunData.damage);

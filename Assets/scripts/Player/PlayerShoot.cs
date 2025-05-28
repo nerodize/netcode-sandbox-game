@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using IngameDebugConsole;
 using Unity.Netcode;
 
 public class PlayerShoot : NetworkBehaviour
@@ -12,6 +13,10 @@ public class PlayerShoot : NetworkBehaviour
     private void Update()
     {
         if (!IsOwner) return;
+        
+        if (DebugLogManager.IsConsoleOpen)
+            return;
+        
         if (Input.GetMouseButtonDown(0))
         {
             Debug.Log("Mouse Click detected!!");

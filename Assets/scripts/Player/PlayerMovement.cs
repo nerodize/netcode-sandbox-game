@@ -1,5 +1,6 @@
 using Unity.Netcode;
 using UnityEngine;
+using IngameDebugConsole;
 
 public class PlayerMovement : NetworkBehaviour
 {
@@ -22,6 +23,9 @@ public class PlayerMovement : NetworkBehaviour
     void Update()
     {
         if (!IsOwner) return;
+
+        if (DebugLogManager.IsConsoleOpen)
+            return;
         
         _isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
         

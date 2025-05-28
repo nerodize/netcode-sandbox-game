@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using IngameDebugConsole;
+using Unity.VisualScripting;
+using Unity.VisualScripting.Dependencies.NCalc;
+using UnityEngine;
 
 public class GunBobbing : MonoBehaviour
 {
@@ -23,6 +26,9 @@ public class GunBobbing : MonoBehaviour
 
     private void Update()
     {
+        if (DebugLogManager.IsConsoleOpen)
+            return;
+        
         Vector2 movementInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
         bool isMoving = movementInput.magnitude > 0.1f;

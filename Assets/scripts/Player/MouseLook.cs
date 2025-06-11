@@ -19,14 +19,12 @@ public class MouseLook : NetworkBehaviour
         if (!IsOwner)
             return;
         
-        
         if (DebugLogManager.IsConsoleOpen)
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             return;
-        }
-        else
+        } 
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
@@ -42,5 +40,10 @@ public class MouseLook : NetworkBehaviour
         
         transform.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
         playerBody.Rotate(Vector3.up, mouseX);
+    }
+    
+    public void SetSensitivity(float val)
+    {
+        mouseSensitivity = val;
     }
 }

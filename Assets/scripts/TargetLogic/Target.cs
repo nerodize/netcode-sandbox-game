@@ -11,10 +11,14 @@ public class Target : NetworkBehaviour, IDamageable
     private float _moveSpeed;
     private bool _isMoving;
 
+    // NetworkVariable für Position (default WritePermission = Server)
+    private NetworkVariable<Vector3> _networkPosition = new(
+        writePerm: NetworkVariableWritePermission.Server);
+
     private void Start()
     {
         _spawner = FindFirstObjectByType<Spawner>();
-        
+
         if (IsServer)
         {
             StartCoroutine(MoveRoutine());
@@ -23,10 +27,16 @@ public class Target : NetworkBehaviour, IDamageable
 
     private void Update()
     {
-        // Bewegung wird nur auf dem Server durchgeführt
         if (IsServer && _isMoving)
         {
             transform.Translate(_moveDirection * (_moveSpeed * Time.deltaTime));
+            // Position in NetworkVariable schreiben, damit Clients es bekommen
+            _networkPosition.Value = transform.position;
+        }
+        else if (!IsServer)
+        {
+            // Auf Clients Position aus NetworkVariable lesen
+            transform.position = _networkPosition.Value;
         }
     }
 
@@ -55,18 +65,14 @@ public class Target : NetworkBehaviour, IDamageable
         if (_health <= 0f)
         {
             _spawner?.StartCoroutine(_spawner.RespawnDelayed());
-
-            // Nur der Server darf Objekte zerstören
-            NetworkObject.Despawn(); // NICHT Destroy!
+            NetworkObject.Despawn(); // Nur der Server darf despawnen
         }
     }
 
     private IEnumerator MoveRoutine()
     {
-        //TODO: maybe better code for this bit
         while (true)
         {
-            // Bewegung in eine zufällige Richtung
             float distance = Random.Range(1f, 3f);
             float speed = Random.Range(2f, 5f);
             float direction = Random.value > 0.5f ? 1f : -1f;
@@ -81,7 +87,6 @@ public class Target : NetworkBehaviour, IDamageable
             _isMoving = false;
             yield return new WaitForSeconds(Random.Range(0.5f, 2f));
 
-            // Zurück in Gegenrichtung
             _moveDirection = new Vector3(-direction, 0, 0);
             distance = Random.Range(1f, 3f);
             speed = Random.Range(2f, 5f);

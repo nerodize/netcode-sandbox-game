@@ -85,10 +85,6 @@ namespace Player
 
         private GameObject _clientCubeInstance;
         private GameObject _serverCubeInstance;
-        /*
-        private readonly NetworkVariable<Vector3> _networkPosition = new(writePerm: NetworkVariableWritePermission.Owner);
-        private readonly NetworkVariable<Quaternion> _networkRotation = new(writePerm: NetworkVariableWritePermission.Owner);
-        */
 
         #endregion
 
@@ -116,22 +112,9 @@ namespace Player
             if (Input.GetKeyDown(KeyCode.Q))
             {
                 _cheatQueued = true;
-                Debug.Log("Q is pressed!"); //hier
+                Debug.Log("Q is pressed!"); 
             }
-            /*
-        if (!IsOwner)
-        {
-            transform.position = _networkPosition.Value;
-            transform.rotation = _networkRotation.Value;
-
-            return;
-        }
-        */
-
-            /*
-            _networkPosition.Value = transform.position;
-            _networkRotation.Value = transform.rotation;
-            */
+     
         }
 
         void FixedUpdate()
@@ -156,8 +139,6 @@ namespace Player
                 
                 StatePayload statePayload = SimulateMovement(inputPayload);
                 
-                // Hier müsste doch was gelogged werden...
-                //Debug.Log($"Current Payload HST: {statePayload.ToString()}; Pos: {statePayload.position}");
                 
                 _serverStateBuffer.Add(statePayload, bufferIndex);
                 _serverCubeInstance.transform.position = statePayload.position.With(y: 58);
@@ -176,7 +157,7 @@ namespace Player
 
             Physics.simulationMode = SimulationMode.Script;
 
-            if (inputPayload.forceTeleport) // oder inputPayload.forceTeleport
+            if (inputPayload.forceTeleport) 
             {
                 controller.enabled = false;
                 transform.position += transform.forward * 20f;
@@ -204,8 +185,7 @@ namespace Player
             bool isNewServerState = !_lastServerState.Equals(default);
             bool isLastStateUndefindedOrDifferent = _lastProcessedState.Equals(default)
                                                     || !_lastProcessedState.Equals(_lastServerState);
-
-            //Debug.Log("Yes, you should do that");
+            
             
             return isNewServerState && isLastStateUndefindedOrDifferent;
         }
@@ -338,7 +318,7 @@ namespace Player
             if (_isGrounded && _velocity.y < 0f)
                 _velocity.y = -2f;
 
-            Vector3 move = transform.right * inputVector.x + transform.forward * inputVector.z; // <== Z statt Y
+            Vector3 move = transform.right * inputVector.x + transform.forward * inputVector.z; 
 
             controller.Move(move * (speed * Time.fixedDeltaTime));
 

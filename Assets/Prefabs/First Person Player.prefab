@@ -120,7 +120,7 @@ MonoBehaviour:
     m_Bits: 64
   gravity: -8
   playerInput: {fileID: 11400000, guid: 003c90456f3ffe94eb21737f8498bec1, type: 2}
-  reconciliationThreshold: 10
+  reconciliationThreshold: 5
   serverCube: {fileID: 8266866352654456898, guid: 2a27ff30200f4e24686c99f3c2b7329a, type: 3}
   clientCube: {fileID: 5907943043710040403, guid: a1457d957720a57439f997d5c84fce47, type: 3}
 --- !u!114 &849525680942801170

@@ -16,9 +16,8 @@
         {
             _timer += deltaTime;
         }
-
-
-        public bool ShoudTick()
+        
+        public bool ShouldTick()
         {
             if (_timer >= MinTimeBetweenTicks) 
             {
@@ -26,7 +25,6 @@
                 CurrentTick ++; 
                 return true;
             }
-			
             return false;
         }
     }

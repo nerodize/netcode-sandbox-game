@@ -3,6 +3,7 @@ using UnityEngine;
 using TMPro;
 using Unity.Netcode;
 
+// TODO: wird das hier verwendet? clean removal!
 public class GunServerSide : NetworkBehaviour
 {
     [Header("References")]

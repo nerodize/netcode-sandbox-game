@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 1777912345313536303}
   - component: {fileID: 7452178154705959986}
   - component: {fileID: 8623323220779458862}
+  - component: {fileID: 8406270767400444148}
   m_Layer: 7
   m_Name: Enemy
   m_TagString: Untagged
@@ -203,12 +204,28 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2179258638732533333}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ad220252a26a46c9a3cdfa485e423a7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   sendRate: 0.083
-  interpolate: 0
+  interpolate: 1
   lerpSpeed: 10
+--- !u!114 &8406270767400444148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2179258638732533333}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c0f161e60e548fabea97fd330bf709c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  sendRate: 0.05
+  interpolationDelay: 0.5
+  positionThreshold: 0.001

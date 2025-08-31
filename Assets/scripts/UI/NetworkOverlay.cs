@@ -3,18 +3,19 @@ using UnityEngine;
 using Unity.Netcode.Transports.UTP;
 using IngameDebugConsole;
 using Unity.Multiplayer.Tools.NetworkSimulator.Runtime;
+using UnityEngine.Serialization;
 
 public class NetworkOverlay : NetworkBehaviour
 {
     private float _lastPingTime;
-    private float _roundTripTime;
-    private NetworkSimulator _networkSimulator;
+    public static float roundTripTime;
+    private NetworkSimulator _networkSimulator; 
 
     private static UnityTransport _transport;
 
     void Awake()
     {
-        _networkSimulator = GetComponent<NetworkSimulator>();
+        _networkSimulator = GetComponent<NetworkSimulator>(); // useless
     }
     
     void Start()
@@ -34,7 +35,8 @@ public class NetworkOverlay : NetworkBehaviour
     {
         if (IsClient && IsOwner)
         {
-            GUI.Label(new Rect(10, 40, 300, 20), $"Ping: {_roundTripTime * 500:F0} ms");
+            GUI.Label(new Rect(10, 40, 300, 20), $"Ping: {roundTripTime * 500:F0} ms");
+            //TODO: add jitter and PL
         }
     }
 
@@ -55,7 +57,7 @@ public class NetworkOverlay : NetworkBehaviour
     {
         if (IsOwner && clientId == NetworkManager.Singleton.LocalClientId)
         {
-            _roundTripTime = Time.time - _lastPingTime;
+            roundTripTime = Time.time - _lastPingTime;
         }
     }
 }

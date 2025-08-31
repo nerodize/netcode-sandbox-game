@@ -3,11 +3,10 @@ using UnityEngine;
 [CreateAssetMenu(fileName="Gun", menuName = "Weapon/Gun")]
 public class GunData : ScriptableObject
 {
+    //[SerializeField]?
     [Header("Info")]
     public new string name;
-    
     [Header("Shooting")]
-
     public float damage;
     public float maxDistance;
     

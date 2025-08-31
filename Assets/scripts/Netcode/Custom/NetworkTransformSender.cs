@@ -9,12 +9,12 @@ using UnityEngine;
 public class NetworkTransformSender : NetworkBehaviour
 {
     [Header("Sende-Frequenz")]
-    public float sendRate = 1f / 20f; // 20 Hz
+    [SerializeField] float sendRate = 1f / 20f; // 20 Hz
     private float _sendTimer;
 
     [Header("Interpolation")]
-    public bool interpolate = true;
-    public float lerpSpeed = 10f;
+    [SerializeField] bool interpolate = true;
+    [SerializeField] float lerpSpeed = 10f;
 
     private Vector3 _targetPosition;
     private Quaternion _targetRotation;

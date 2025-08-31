@@ -32,13 +32,6 @@ public class Spawner : NetworkBehaviour
         yield return new WaitForSeconds(2f);
         Respawn();
     }
-
-    /*
-    private void Start()
-    {
-        Respawn();
-    }
-    */
     
     public override void OnNetworkSpawn()
     {

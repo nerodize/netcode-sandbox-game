@@ -29,4 +29,11 @@ public class ConsoleCommands : NetworkBehaviour
     {
         DebugLogManager.Instance.ClearLogs();
     }
+    
+    [ConsoleMethod("lagcomp", "Toggle Lag Compensation On/Off")]
+    public static void ToggleLagComp()
+    {
+        Gun.lagCompensationEnabled = !Gun.lagCompensationEnabled;
+        Debug.Log($"Lag Compensation set to: {Gun.lagCompensationEnabled}");
+    }
 }

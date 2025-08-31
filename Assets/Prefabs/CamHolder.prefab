@@ -393,8 +393,9 @@ MonoBehaviour:
   shootSound: {fileID: 8300000, guid: d9419ba0bfac1e84a95418ac5851caf6, type: 3}
   gunSway: {fileID: 5918802246742553533}
   ammoText: {fileID: 0}
-  bulletHolePrefab: {fileID: 1960662189629675877, guid: 15e3e7ae0a512344887ffc87fd5a9d6c, type: 3}
-  destroyDelay: 10
+  bulletManager: {fileID: 0}
+  sfx: {fileID: 0}
+  hitmarkerSound: {fileID: 0}
 --- !u!114 &5918802246742553533
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -626,8 +627,9 @@ MonoBehaviour:
   shootSound: {fileID: 8300000, guid: 4310474905e266640852f43bd609a1a4, type: 3}
   gunSway: {fileID: 0}
   ammoText: {fileID: 0}
-  bulletHolePrefab: {fileID: 0}
-  destroyDelay: 10
+  bulletManager: {fileID: 0}
+  sfx: {fileID: 0}
+  hitmarkerSound: {fileID: 0}
 --- !u!114 &2841808475756598882
 MonoBehaviour:
   m_ObjectHideFlags: 0

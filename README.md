@@ -1,5 +1,11 @@
+# Warum nicht als Zip?
+Die verwendeten Assets sind im aktuellen Stand noch zu groß (insgesamt an die 12GB) um hochgeladen zu werden.
+
 # Wo ist was zu finden?
 Der code findet sich unter ``Assets/scripts`` wieder und ist hier hauptsächlich im Unterordner ``Assets/scrits/Gun`` oder ``/Player`` zu finden.
+Die erhaltenen Messwerte sind vor allem unter ``Assets/Measurements`` gespeichert und können eingesehen werden. 
+
+Wenn das Spiel jedoch gestartet wird werden diese Daten in einen persistenten Ordner unter Unity gelegt
 
 Desweiteren wird nicht jedes Skript verwendet, hierbei handelt es sich oft um eine Art _deprecated_ code der noch aufgeräumt werden muss.
 

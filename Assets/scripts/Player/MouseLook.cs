@@ -23,8 +23,9 @@ public class MouseLook : NetworkBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            return;
         } 
+        // Hier etwas geändert müsste allerdings noch funktionieren...
+        else
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;

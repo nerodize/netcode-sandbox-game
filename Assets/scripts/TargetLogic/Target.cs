@@ -1,9 +1,20 @@
 using UnityEngine;
 using Unity.Netcode;
 using System.Collections;
+using System.Collections.Generic;
+
 
 public class Target : NetworkBehaviour, IDamageable
 {
+    private struct BufferState
+    {
+        public Vector3 Position;
+        public double Timestamp;
+    }
+    
+    private readonly List<BufferState> _buffer = new();
+    private const float BufferTime = 1.0f;
+    
     private float _health = 100f;
     private Spawner _spawner;
 
@@ -40,6 +51,43 @@ public class Target : NetworkBehaviour, IDamageable
         }
     }
 
+    private void FixedUpdate()
+    {
+        if (!IsServer) return;
+        
+        _buffer.Add(new BufferState
+        {
+            Position = transform.position,
+            Timestamp = NetworkManager.ServerTime.Time
+        });
+
+        _buffer.RemoveAll(state => NetworkManager.ServerTime.Time - state.Timestamp > BufferTime);
+    }
+    
+    public Vector3? GetRewindPosition(double timestamp)
+    {
+        BufferState? older = null, newer = null;
+
+        foreach (var state in _buffer)
+        {
+            if (state.Timestamp <= timestamp)
+                older = state;
+            else if (state.Timestamp > timestamp)
+            {
+                newer = state;
+                break;
+            }
+        }
+
+        if (older.HasValue && newer.HasValue)
+        {
+            float t = (float)((timestamp - older.Value.Timestamp) / (newer.Value.Timestamp - older.Value.Timestamp));
+            return Vector3.Lerp(older.Value.Position, newer.Value.Position, t);
+        }
+
+        return older?.Position;
+    }
+
     public void Damage(float damage)
     {
         if (IsServer)
@@ -73,8 +121,8 @@ public class Target : NetworkBehaviour, IDamageable
     {
         while (true)
         {
-            float distance = Random.Range(1f, 3f);
-            float speed = Random.Range(2f, 5f);
+            float distance = Random.Range(4f, 6f);
+            float speed = Random.Range(10f, 13f);
             float direction = Random.value > 0.5f ? 1f : -1f;
 
             _moveDirection = new Vector3(direction, 0, 0);
